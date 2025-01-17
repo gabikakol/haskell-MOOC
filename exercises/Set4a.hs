@@ -35,6 +35,14 @@ import Data.Array
 -- you remove the Eq a => constraint from the type!
 
 allEqual :: Eq a => [a] -> Bool
+helper1 :: Eq a => a -> [a] -> Bool
+
+allEqual [] = True
+allEqual (a:b) = helper1 a b
+helper1 o [] = True
+helper1 a (b:c) = if a == b
+                then helper1 a c
+                else False
 
 ------------------------------------------------------------------------------
 -- Ex 2: implement the function distinct which returns True if all
@@ -49,7 +57,11 @@ allEqual :: Eq a => [a] -> Bool
 --   distinct [1,2] ==> True
 
 distinct :: Eq a => [a] -> Bool
-distinct = todo
+-- distinct = todo
+distinct [] = True
+distinct (a:b) = if elem a b
+                  then False
+                  else distinct b
 
 ------------------------------------------------------------------------------
 -- Ex 3: implement the function middle that returns the middle value
@@ -62,8 +74,20 @@ distinct = todo
 --   middle 'b' 'a' 'c'  ==> 'b'
 --   middle 1 7 3        ==> 3
 
-middle = todo
+-- middle = todo
 
+middle :: Ord a => a -> a -> a -> a
+middle a b c = if a <= b
+               then if b <= c 
+                    then b 
+                    else if a <= c 
+                    then c 
+                    else a
+               else if a <= c 
+               then a 
+               else if b <= c 
+               then c 
+               else b
 ------------------------------------------------------------------------------
 -- Ex 4: return the range of an input list, that is, the difference
 -- between the smallest and the largest element.
@@ -77,8 +101,13 @@ middle = todo
 --   rangeOf [4,2,1,3]          ==> 3
 --   rangeOf [1.5,1.0,1.1,1.2]  ==> 0.5
 
-rangeOf :: [a] -> a
-rangeOf = todo
+-- rangeOf :: [a] -> a
+-- rangeOf = todo
+
+rangeOf :: (Ord a, Num a) => [a] -> a
+helper4 :: Num a => a -> a -> a
+rangeOf a = helper4 (minimum a) (maximum a)
+helper4 min max = max-min
 
 ------------------------------------------------------------------------------
 -- Ex 5: given a (non-empty) list of (non-empty) lists, return the longest
@@ -128,7 +157,10 @@ incrementKey = todo
 -- length to a Fractional
 
 average :: Fractional a => [a] -> a
-average xs = todo
+helper7 :: Fractional a => a -> Int -> a
+
+average xs = helper7 (sum xs) (length xs)
+helper7 a b = a/fromIntegral b
 
 ------------------------------------------------------------------------------
 -- Ex 8: given a map from player name to score and two players, return
@@ -147,7 +179,13 @@ average xs = todo
 --     ==> "Lisa"
 
 winner :: Map.Map String Int -> String -> String -> String
-winner scores player1 player2 = todo
+-- winner scores player1 player2 = todo
+
+winner scores player1 player2 = let x = Map.findWithDefault 0 player1 scores
+                                    y = Map.findWithDefault 0 player2 scores
+                                in if x < y 
+                                   then player2
+                                   else player1
 
 ------------------------------------------------------------------------------
 -- Ex 9: compute how many times each value in the list occurs. Return
